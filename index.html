@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+<title>Someday — Girlfriend Day 2026</title>
+<meta name="description" content="An interactive International Girlfriend Day 2026 celebration by Sourya791m" />
+<link rel="manifest" href="manifest.json" />
+<meta name="theme-color" content="#0b0714" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,500;0,9..144,600;1,9..144,500&family=Inter:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+<canvas id="constellation"></canvas>
+<div id="petals"></div>
+
+<header class="topbar">
+  <div class="brand">Someday <span class="brand-year">'26</span></div>
+  <nav class="topbar-nav" id="topbarNav">
+    <button class="icon-btn" id="navExplore" title="Explore" aria-label="Explore">✨</button>
+    <button class="icon-btn" id="navLeaderboard" title="Leaderboard" aria-label="Leaderboard">🏆</button>
+    <button class="icon-btn" id="navProfile" title="Profile" aria-label="Profile">👤</button>
+    <button class="icon-btn" id="soundToggle" aria-label="Toggle sound">🔈</button>
+    <button class="icon-btn" id="themeToggle" aria-label="Toggle theme">☾</button>
+  </nav>
+</header>
+
+<div id="dbModeBanner" class="db-mode-banner hidden"></div>
+
+<main id="app">
+
+  <!-- 0. LOADING -->
+  <section class="screen active" id="screen-loading">
+    <div class="loading-wrap">
+      <div class="loading-heart">♥</div>
+      <p class="loading-text" data-i18n="loading">gathering rose petals…</p>
+    </div>
+  </section>
+
+  <!-- 1. LANGUAGE -->
+  <section class="screen" id="screen-language">
+    <div class="card center-card">
+      <p class="eyebrow">Before we begin</p>
+      <h1 class="display-lg">Choose your language</h1>
+      <div class="choice-grid two">
+        <button class="choice-btn" data-lang="en"><span class="choice-flag">🇺🇸</span><span>English</span></button>
+        <button class="choice-btn" data-lang="hi"><span class="choice-flag">🇮🇳</span><span>Hinglish</span></button>
+      </div>
+    </div>
+  </section>
+
+  <!-- 2. HERO -->
+  <section class="screen" id="screen-hero">
+    <div class="hero">
+      <div class="celebration-banner glass" id="celebrationBanner"></div>
+      <div class="referred-banner glass hidden" id="referredBanner"></div>
+
+      <p class="eyebrow" data-i18n="heroEyebrow">International Girlfriend Day · Aug 1</p>
+      <h1 class="display-hero"><span class="type-target" id="typewriter"></span></h1>
+      <p class="hero-sub" data-i18n="heroSub">A little journey. A big celebration. Made for someone who deserves it.</p>
+
+      <div class="countdown" id="countdown">
+        <div class="cd-box"><span id="cdDays">00</span><label data-i18n="days">days</label></div>
+        <div class="cd-box"><span id="cdHours">00</span><label data-i18n="hours">hrs</label></div>
+        <div class="cd-box"><span id="cdMins">00</span><label data-i18n="mins">min</label></div>
+        <div class="cd-box"><span id="cdSecs">00</span><label data-i18n="secs">sec</label></div>
+      </div>
+
+      <button class="cta-btn" id="beginBtn" data-i18n="begin">Begin the story →</button>
+
+      <div class="hero-stats glass">
+        <div class="stat"><span id="liveVisitors">—</span><label data-i18n="live">live now</label></div>
+        <div class="stat"><span id="totalStories">—</span><label data-i18n="stories">joined</label></div>
+        <div class="stat"><span id="totalYes">—</span><label data-i18n="yeses">yeses said</label></div>
+      </div>
+
+      <div class="activity-ticker" id="activityTicker"></div>
+    </div>
+  </section>
+
+  <!-- 3. GENDER -->
+  <section class="screen" id="screen-gender">
+    <div class="card center-card">
+      <p class="eyebrow" data-i18n="whoAskEyebrow">One quick thing</p>
+      <h1 class="display-lg" data-i18n="whoAsk">Who are you?</h1>
+      <div class="choice-grid two">
+        <button class="choice-btn" data-gender="girl"><span class="choice-flag">👧</span><span data-i18n="girl">Girl</span></button>
+        <button class="choice-btn" data-gender="boy"><span class="choice-flag">👦</span><span data-i18n="boy">Boy</span></button>
+      </div>
+    </div>
+  </section>
+
+  <!-- 4. ENTRY CHOICE (girls, only when no ?invite= in URL) -->
+  <section class="screen" id="screen-entry-choice">
+    <div class="card center-card">
+      <p class="eyebrow" data-i18n="entryEyebrow">How did you get here?</p>
+      <h1 class="display-lg" data-i18n="entryTitle">Choose how to begin</h1>
+      <div class="choice-grid one">
+        <button class="choice-btn wide" id="entryReceived">
+          <span data-i18n="entryReceived">❤️ I received this link from someone</span>
+        </button>
+        <button class="choice-btn wide" id="entryOwn">
+          <span data-i18n="entryOwn">✨ I want my own invitation</span>
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- 4b. Manual referral name entry (if link had no ?invite param) -->
+  <section class="screen" id="screen-referral-name">
+    <div class="card center-card">
+      <p class="eyebrow" data-i18n="referralEyebrow">Give credit where it's due</p>
+      <h1 class="display-lg" data-i18n="referralAsk">Who sent you this?</h1>
+      <input type="text" id="referralNameInput" class="text-input" data-i18n-placeholder="referralPlaceholder" placeholder="Their name" maxlength="30" />
+      <button class="cta-btn" id="referralContinueBtn" data-i18n="continue">Continue</button>
+    </div>
+  </section>
+
+  <!-- 5a. GIRL: NAME -->
+  <section class="screen" id="screen-girl-name">
+    <div class="card center-card">
+      <div class="referred-banner glass hidden" id="referredBannerName"></div>
+      <p class="eyebrow" data-i18n="nameEyebrow">This story is yours</p>
+      <h1 class="display-lg" data-i18n="nameAsk">What's your name?</h1>
+      <input type="text" id="girlNameInput" class="text-input" data-i18n-placeholder="namePlaceholder" placeholder="Type your name" maxlength="30" />
+      <p class="field-hint" id="nameHint"></p>
+      <button class="cta-btn" id="nameContinueBtn" data-i18n="continue">Continue</button>
+    </div>
+  </section>
+
+  <!-- 5b. GIRL: PHOTO -->
+  <section class="screen" id="screen-girl-photo">
+    <div class="card center-card">
+      <p class="eyebrow" data-i18n="photoEyebrow">Optional</p>
+      <h1 class="display-lg" data-i18n="photoAsk">Add a photo?</h1>
+      <p class="hero-sub small" data-i18n="photoNote">Stays on this device only. Totally skippable.</p>
+      <div class="photo-drop" id="photoDrop">
+        <img id="photoPreview" alt="" />
+        <span id="photoPlaceholder">📷</span>
+      </div>
+      <input type="file" id="photoInput" accept="image/*" hidden />
+      <div class="btn-row">
+        <button class="ghost-btn" id="photoSkipBtn" data-i18n="skip">Skip</button>
+        <button class="cta-btn" id="photoContinueBtn" data-i18n="continue">Continue</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- 6. JOURNEY -->
+  <section class="screen" id="screen-journey">
+    <div class="card center-card" id="journeyCard"></div>
+    <div class="journey-progress"><div class="journey-progress-fill" id="journeyProgress"></div></div>
+  </section>
+
+  <!-- 7. PROPOSAL -->
+  <section class="screen" id="screen-proposal">
+    <div class="card center-card proposal-card">
+      <p class="eyebrow" data-i18n="finalEyebrow">The question</p>
+      <h1 class="display-lg" id="proposalTitle" data-i18n="proposalTitle">Will you be my girlfriend?</h1>
+      <div class="proposal-buttons">
+        <button class="choice-btn big yes" id="yesBtn" data-i18n="yesBtn">❤️ Yes</button>
+        <button class="ghost-btn" id="thinkingBtn" data-i18n="thinkingBtn">🙈 Thinking</button>
+        <button class="ghost-btn dodge" id="runBtn" data-i18n="runBtn">🏃 Run Away</button>
+      </div>
+      <p class="dodge-caption" id="dodgeCaption"></p>
+    </div>
+  </section>
+
+  <!-- 8. CELEBRATION -->
+  <section class="screen" id="screen-celebration">
+    <div class="card center-card">
+      <h1 class="display-hero small-hero" data-i18n="celebrateTitle">She said yes ❤️</h1>
+      <p class="hero-sub" data-i18n="celebrateSub">Happy Girlfriend Day. Here's to your story.</p>
+      <div class="letter glass" id="loveLetter"></div>
+      <div class="badge-row" id="unlockBadges"></div>
+      <div class="btn-row">
+        <button class="cta-btn" id="makeCardBtn" data-i18n="makeCard">Create my share card</button>
+        <button class="ghost-btn" id="exploreFromCelebrateBtn" data-i18n="explore">Explore more</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- 9. SHARE CARD -->
+  <section class="screen" id="screen-share">
+    <div class="card center-card">
+      <h1 class="display-lg" data-i18n="shareTitle">Your card is ready</h1>
+      <canvas id="shareCanvas" width="600" height="750"></canvas>
+      <div class="btn-row">
+        <button class="cta-btn" id="downloadCardBtn" data-i18n="download">Download</button>
+        <button class="ghost-btn" id="copyLinkBtn" data-i18n="copyLink">Copy my invite link</button>
+      </div>
+      <p class="field-hint" id="copiedHint"></p>
+      <p class="referral-hint" id="myInviteLinkText"></p>
+    </div>
+  </section>
+
+  <!-- 10. PROFILE -->
+  <section class="screen" id="screen-profile">
+    <div class="card center-card wide">
+      <div class="profile-photo-wrap"><img id="profilePhoto" alt="" /><span id="profilePhotoFallback">👤</span></div>
+      <h1 class="display-lg" id="profileName">—</h1>
+      <p class="field-hint" id="profileJoined"></p>
+      <div class="hero-stats glass">
+        <div class="stat"><span id="profileReferrals">0</span><label data-i18n="pInvites">invitations</label></div>
+        <div class="stat"><span id="profileShares">0</span><label data-i18n="pShares">shares</label></div>
+        <div class="stat"><span id="profileHearts">0</span><label data-i18n="pHearts">hearts</label></div>
+      </div>
+      <h3 class="owner-sub" data-i18n="pAchievements">Achievements</h3>
+      <div class="badge-row" id="profileBadges"></div>
+      <p class="referral-hint" id="profileInviteLink"></p>
+      <div class="btn-row">
+        <button class="cta-btn" id="profileCopyBtn" data-i18n="copyLink">Copy my invite link</button>
+        <button class="ghost-btn" id="profileExploreBtn" data-i18n="explore">Explore more</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- 11. EXPLORE HUB -->
+  <section class="screen" id="screen-explore">
+    <div class="card center-card wide" id="exploreRoot">
+      <h1 class="display-lg" data-i18n="exploreTitle">Explore Girlfriend Day</h1>
+      <div class="mf-grid" id="mfGrid">
+        <button class="mf-card" data-mf="fortune"><span class="mf-emoji">🔮</span><span data-i18n="mfFortune">Love Fortune</span></button>
+        <button class="mf-card" data-mf="wheel"><span class="mf-emoji">🎡</span><span data-i18n="mfWheel">Spin the Love Wheel</span></button>
+        <button class="mf-card" data-mf="compliment"><span class="mf-emoji">💬</span><span data-i18n="mfCompliment">Compliment Generator</span></button>
+        <button class="mf-card" data-mf="garden"><span class="mf-emoji">🌹</span><span data-i18n="mfGarden">Virtual Rose Garden</span></button>
+        <button class="mf-card" data-mf="quiz"><span class="mf-emoji">💞</span><span data-i18n="mfQuiz">Compatibility Quiz</span></button>
+        <button class="mf-card" data-mf="letters"><span class="mf-emoji">💌</span><span data-i18n="mfLetters">Secret Love Letters</span></button>
+      </div>
+      <div class="mf-panel hidden" id="mfPanel"></div>
+      <button class="ghost-btn" id="exploreBackBtn" data-i18n="backHome">Back</button>
+    </div>
+  </section>
+
+  <!-- 12a. BOY: SINGLE / TAKEN -->
+  <section class="screen" id="screen-boy-status">
+    <div class="card center-card">
+      <h1 class="display-lg" data-i18n="boyAsk">Today is Girlfriend Day ❤️. Are you single?</h1>
+      <div class="choice-grid two">
+        <button class="choice-btn" data-single="yes" data-i18n="single">Yes 😔</button>
+        <button class="choice-btn" data-single="no" data-i18n="taken">No 😎</button>
+      </div>
+    </div>
+  </section>
+
+  <section class="screen" id="screen-boy-taken">
+    <div class="card center-card">
+      <h1 class="display-lg" data-i18n="takenTitle">Lucky her.</h1>
+      <p class="hero-sub" data-i18n="takenSub">Tag her and make today about her, not this website.</p>
+      <button class="cta-btn" id="takenShareBtn" data-i18n="makeCard">Create a card for her</button>
+    </div>
+  </section>
+
+  <section class="screen" id="screen-wish">
+    <div class="card center-card">
+      <p class="eyebrow" data-i18n="wishEyebrow">Just for you</p>
+      <h1 class="display-lg" data-i18n="wishTitle">Write it down.</h1>
+      <p class="hero-sub small" data-i18n="wishNote">This stays private — it's not posted publicly or sent to anyone.</p>
+      <textarea id="wishInput" class="text-area" maxlength="200" data-i18n-placeholder="wishPlaceholder" placeholder="What are you hoping for this year?"></textarea>
+      <button class="cta-btn" id="wishSubmitBtn" data-i18n="wishSubmit">Seal it</button>
+      <div id="wishResult" class="letter glass hidden"></div>
+    </div>
+  </section>
+
+  <!-- 13. LEADERBOARD -->
+  <section class="screen" id="screen-leaderboard">
+    <div class="card center-card wide">
+      <h1 class="display-lg" data-i18n="lbTitle">Leaderboard</h1>
+      <div class="tabs" id="lbTabs">
+        <button class="tab active" data-tab="referrals" data-i18n="tabInvited">Most Invitations</button>
+        <button class="tab" data-tab="shares" data-i18n="tabViral">Most Shared</button>
+        <button class="tab" data-tab="hearts" data-i18n="tabLoved">Most Loved</button>
+      </div>
+      <p class="field-hint" id="lbEmptyHint"></p>
+      <ol class="lb-list" id="lbList"></ol>
+      <h3 class="owner-sub" data-i18n="lbActivity">Recent activity</h3>
+      <ol class="activity-list" id="activityList"></ol>
+      <button class="ghost-btn" id="lbBackBtn" data-i18n="backHome">Back</button>
+    </div>
+  </section>
+
+  <!-- 14. OWNER DASHBOARD -->
+  <section class="screen" id="screen-owner">
+    <div class="card center-card wide">
+      <h1 class="display-lg">Owner dashboard</h1>
+      <p class="hero-sub small">Local moderation view. Clearly labeled — never shown to visitors as a peer.</p>
+      <div class="owner-stats glass" id="ownerStats"></div>
+      <div class="tabs" id="ownerTabs">
+        <button class="tab active" data-otab="users">Users</button>
+        <button class="tab" data-otab="wishes">Wishes</button>
+        <button class="tab" data-otab="activity">Activity</button>
+      </div>
+      <ol class="lb-list" id="ownerList"></ol>
+      <div class="btn-row">
+        <button class="ghost-btn" id="exportJsonBtn">Export JSON</button>
+        <button class="ghost-btn danger" id="resetDbBtn">Reset local data</button>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="site-footer">
+  <p>Made by <a href="https://sourya791m.github.io/sourya791m" target="_blank" rel="noopener">Sourya791m</a> ·
+  <a href="https://t.me/TheNextLevelOfficial" target="_blank" rel="noopener">@TheNextLevelOfficial</a></p>
+</footer>
+
+<script src="firebase-config.js"></script>
+<script src="db.js"></script>
+<script src="script.js"></script>
+</body>
+</html>

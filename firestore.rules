@@ -1,0 +1,46 @@
+// Apply these in Firebase Console > Firestore Database > Rules.
+// This is a starter — it stops the most obvious abuse (huge
+// payloads, wrong field types, editing other users' counters
+// directly) without requiring you to add login/auth. For real
+// production traffic, pair this with Firebase App Check.
+
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    match /users/{userId} {
+      allow read: if true;
+      allow create: if request.resource.data.name is string
+                    && request.resource.data.name.size() < 40
+                    && request.resource.data.keys().hasOnly(
+                         ['name','joinedAt','referrals','shares','hearts','completed','referredBy','photo']);
+      // only allow incrementing numeric fields by small amounts, never rewriting name/joinedAt
+      allow update: if request.resource.data.name == resource.data.name
+                    && request.resource.data.joinedAt == resource.data.joinedAt
+                    && request.resource.data.referrals is int
+                    && request.resource.data.shares is int
+                    && request.resource.data.hearts is int;
+      allow delete: if false;
+    }
+
+    match /activity/{id} {
+      allow read: if true;
+      allow create: if request.resource.data.keys().hasOnly(['type','name','at'])
+                    && request.resource.data.name.size() < 40;
+      allow update, delete: if false;
+    }
+
+    match /wishes/{id} {
+      allow read: if true;
+      allow create: if request.resource.data.text.size() < 220;
+      allow update: if request.resource.data.diff(resource.data).affectedKeys()
+                       .hasOnly(['pinned','removed']);
+      allow delete: if false;
+    }
+
+    match /meta/{id} {
+      allow read: if true;
+      allow write: if request.resource.data.keys().hasAny(['visitors','stories','yeses']);
+    }
+  }
+}

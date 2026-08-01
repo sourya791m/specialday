@@ -1,0 +1,10 @@
+{
+  "name": "Someday — Girlfriend Day 2026",
+  "short_name": "Someday",
+  "description": "An interactive Girlfriend Day 2026 experience",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#0b0714",
+  "theme_color": "#0b0714",
+  "icons": []
+}
